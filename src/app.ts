@@ -1,5 +1,8 @@
+import * as dotenv from 'dotenv';
 import express, { Router } from 'express';
 import connectToDatabase from './connection';
+
+dotenv.config();
 
 class App {
   public app: express.Application;
