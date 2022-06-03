@@ -14,6 +14,8 @@ export enum ControllerErrors {
   notFound = 'Error not Found',
   requiredId = 'Id is required',
   badRequest = 'Bad Request',
+  shortId = 'Id must have 24 hexadecimal characters',
+  invalidId = 'Object not found',
 }
 
 abstract class AbstractController<T> {
@@ -36,23 +38,14 @@ abstract class AbstractController<T> {
     }
   };
 
-  public readOne = async (
+  abstract readOne(
     req: RequestWithBody<T>, 
-    res: Response<T | null | ResponseError>,
-  ) : Promise<typeof res> => {
-    const { id } = req.params;
-    try {
-      if (!id) return res.status(412).json({ error: this.errors.requiredId });
-      const oneObject = await this.service.readOne(id);
-      return res.status(200).json(oneObject);
-    } catch (err) {
-      return res.status(500).json({ error: this.errors.internal });
-    }
-  };
+    res: Response<T | null | ResponseError>)
+  : Promise<typeof res>;
 
   abstract update(
     req: RequestWithBody<T>,
-    res: Response<T | null | ResponseError>)
+    res: Response<T | null | ResponseError | void>)
   : Promise<typeof res>;
 
   public delete = async (

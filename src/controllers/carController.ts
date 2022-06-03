@@ -17,6 +17,26 @@ class CarController extends AbstractController<Car> {
 
   get route() { return this._route; }
 
+  public readOne = async (
+    req: RequestWithBody<Car>, 
+    res: Response<Car | null | ResponseError>,
+  ) : Promise<typeof res> => {
+    const { id } = req.params;
+    try {
+      if (!id) return res.status(412).json({ error: this.errors.requiredId });
+      if (id.length < 24) {
+        return res.status(400).json({ error: this.errors.shortId });
+      } 
+      const oneObject = await this.service.readOne(id);
+      if (!oneObject) {
+        return res.status(404).json({ error: this.errors.invalidId });
+      }
+      return res.status(200).json(oneObject);
+    } catch (err) {
+      return res.status(500).json({ error: this.errors.internal });
+    }
+  };
+
   public create = async (
     req: RequestWithBody<Car>,
     res: Response<Car | ResponseError>,
@@ -34,16 +54,19 @@ class CarController extends AbstractController<Car> {
 
   public update = async (
     req: RequestWithBody<Car>, 
-    res: Response<Car | ResponseError | null>,
+    res: Response<Car | ResponseError | null | void>,
   ): Promise<typeof res> => {
     const { id } = req.params;
     try {
-      if (!id) return res.status(412).json({ error: this.errors.requiredId });
+      if (Object.keys(req.body).length === 0) return res.status(400).json();
+      if (id.length < 24) {
+        return res.status(400).json({ error: this.errors.shortId });
+      } 
       const updateCar = await this.service.update(id, req.body);
-      if (updateCar) {
-        return res.status(400).json(updateCar);
+      if (!updateCar) {
+        return res.status(404).json({ error: this.errors.invalidId });
       }
-      return res.status(201).json(updateCar);
+      return res.status(200).json(updateCar);
     } catch (err) {
       return res.status(500).json({ error: this.errors.internal });
     }
