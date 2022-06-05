@@ -6,7 +6,7 @@ export interface IServiceError {
 }
 
 abstract class AbstractService<T> {
-  constructor(protected model: Model<T>) {}
+  constructor(public model: Model<T>) {}
 
   public async create(obj: T): Promise<T | IServiceError> {
     return this.model.create({ ...obj });

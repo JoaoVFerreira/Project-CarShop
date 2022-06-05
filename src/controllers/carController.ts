@@ -8,7 +8,7 @@ class CarController extends AbstractController<Car> {
   private _route: string;
 
   constructor(
-    protected service = new CarService(),
+    public service = new CarService(),
     route = '/cars',
   ) {
     super(service);
