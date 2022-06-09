@@ -11,7 +11,6 @@ const HOT: string = 'HOT' // DEMORA ATÉ 6 SEGUNDOS
 const UNIT: string = 'UNIT' // IDENTIFICADOR DE TESTE UNITÁRIO
 
 let carController = new CarController();
-// let car: Car | Car[] | IServiceError | null;
 let req = {} as RequestWithBody<Car>;
 let res = {} as Response;
 
